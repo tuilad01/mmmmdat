@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import {
+  GROUP_NAMES,
+  PUBLIC_JSON_PATH,
+  ROOT_LOCAL_STORAGE_PATH,
+  seedLocalStorage,
+} from "./common";
+import { Link, Outlet } from "react-router-dom";
 
 function App() {
+  useEffect(() => {
+    seedLocalStorage(GROUP_NAMES, PUBLIC_JSON_PATH, ROOT_LOCAL_STORAGE_PATH);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ul className="p-4">
+        {GROUP_NAMES.map((groupName, index) => (
+          <li key={groupName}>
+            <Link
+              to={`/group/${groupName}`}
+              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            >
+              {index + 1}. {groupName}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
