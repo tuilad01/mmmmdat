@@ -35,7 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "git": "git status && git add . && git commit -m \"update code\" && git push github master",
+    "git": "git status && git add . && git commit -m \"update code\" && git push main master",
     "deploy": "npm run build && netlify deploy --prod --dir=build"
   },
   "eslintConfig": {
