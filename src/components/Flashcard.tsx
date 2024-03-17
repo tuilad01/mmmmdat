@@ -57,6 +57,7 @@ function Flashcard() {
   useEffect(() => {
     save();
   }, [state]);
+
   const handleClick = (flashcard: Flashcard) => {
     click += 1;
 
