@@ -14,6 +14,9 @@ export interface Group {
   name: string;
   sentences: Sentence[];
 }
+
+
+
 function Group() {
   const { name, sentences: data } = useLoaderData() as Group;
   const [sentences, setSentences] = useState<Sentence[]>(data);
@@ -44,9 +47,10 @@ function Group() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(JSON.stringify(text));
+    navigator.clipboard.writeText(text);
     toast("copied", { icon: () => "🤪" });
   };
+
 
   return (
     <section className="p-4">

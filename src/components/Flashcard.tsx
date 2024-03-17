@@ -19,6 +19,21 @@ const PASSED = [1, 2, 2];
 let timeOutClick: any = null;
 let click = 0;
 
+const random = (list: unknown[]) => {
+  let index = list.length;
+
+  while (index > 0) {
+    const newIndex = Math.floor(Math.random() * list.length);
+    index--;
+
+    const temp = list[index];
+    list[index] = list[newIndex];
+    list[newIndex] = temp;
+  }
+
+  return list;
+};
+
 function Flashcard() {
   const { name, sentences: data } = useLoaderData() as Group;
   const [state, setState] = useState(0);
@@ -31,7 +46,7 @@ function Flashcard() {
         sentence: flashcard.sentence,
         meaning: flashcard.meaning,
         color: color,
-        isFront: true,
+        isFront: false,
         state: flashcard.state === undefined ? 0 : flashcard.state,
         isHidden: false,
       };
@@ -42,7 +57,6 @@ function Flashcard() {
   useEffect(() => {
     save();
   }, [state]);
-
   const handleClick = (flashcard: Flashcard) => {
     click += 1;
 
@@ -88,8 +102,12 @@ function Flashcard() {
         flashcard.state = 0;
       }
       flashcard.isHidden = false;
+      flashcard.isFront = false;
       return flashcard;
     });
+
+    //const shuffle = random(failed)
+
     setFlashcards((prev) => [...failed]);
     setState((prev) => (prev + 1) % 3);
   };
