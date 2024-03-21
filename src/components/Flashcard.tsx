@@ -1,5 +1,5 @@
-import { useLoaderData } from "react-router-dom";
-import { Group, Sentence } from "./group";
+import { useLoaderData, useLocation } from "react-router-dom";
+import { Group, Sentence } from "./Group";
 import CardList, { CardRef, Card } from "./Card";
 import Button from "./Button";
 import Anchor from "./Anchor";
@@ -18,8 +18,11 @@ interface Flashcard {
 const PASSED = [1, 2, 2];
 
 function Flashcard() {
+  const { search } = useLocation();
+  const parameters = new URLSearchParams(search);
+  //let selectedState = parameters.get("state");
   const { name, sentences: data } = useLoaderData() as Group;
-  const [state, setState] = useState(0);
+  const [state, setState] = useState<number>(0);
   const [flashcards, setFlashcards] = useState<any[]>([]);
   const cardRef = useRef<CardRef | null>(null);
 
@@ -29,6 +32,12 @@ function Flashcard() {
     ]);
   }, []);
 
+  // useEffect(() => {
+  //   if (selectedState) {
+  //     setState(parseInt(selectedState ?? 0));
+  //   }
+  // }, [selectedState]);
+
   const handleNextState = () => {
     const newState = (state + 1) % 3;
 
@@ -37,7 +46,7 @@ function Flashcard() {
     // save data to local
     const newData = saveState(cards, data);
     setGroupByName(name, newData);
-    setFlashcards(newData.filter((item) => item.state === newState));
+    setFlashcards(newData.filter((item) => item.state <= newState));
   };
 
   const saveState = (cards: Card[], sentences: Sentence[]) => {

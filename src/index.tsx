@@ -11,7 +11,7 @@ import {
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { getGroupByName } from "./common";
-import Group from "./components/group";
+import Group from "./components/Group";
 import "react-toastify/dist/ReactToastify.css";
 import Flashcard from "./components/Flashcard";
 

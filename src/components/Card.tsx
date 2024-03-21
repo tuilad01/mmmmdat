@@ -81,9 +81,9 @@ const CardList = forwardRef<CardRef, { data: any[] }>(({ data }, ref) => {
             style={{ backgroundColor: card.color }}
           >
             {card.isFront ? (
-              <div>{card.sentence}</div>
+              <div className="text-2xl font-sans">{card.sentence}</div>
             ) : (
-              <div>{card.meaning}</div>
+              <div className="text-2xl font-sans">{card.meaning}</div>
             )}
           </div>
         </li>

@@ -17,10 +17,10 @@ function App() {
     <div>
       <ul className="p-4">
         {GROUP_NAMES.map((groupName, index) => (
-          <li key={groupName}>
+          <li key={groupName} className="mb-2">
             <Link
               to={`/group/${groupName}`}
-              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              className="font-medium text-blue-600 dark:text-blue-500 hover:bg-slate-100 active:bg-slate-200 border-solid border-2 border-indigo-600 rounded-lg block p-4 md:w-[398px]"
             >
               {index + 1}. {groupName}
             </Link>

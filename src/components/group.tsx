@@ -15,8 +15,6 @@ export interface Group {
   sentences: Sentence[];
 }
 
-
-
 function Group() {
   const { name, sentences: data } = useLoaderData() as Group;
   const [sentences, setSentences] = useState<Sentence[]>(data);
@@ -46,11 +44,24 @@ function Group() {
     navigate(`/flashcard/${name}`);
   };
 
+  const handleImport = () => {
+    navigator.clipboard.readText().then((text) => {
+      if (!text) {
+        return false;
+      }
+      const sentences = JSON.parse(text);
+      if (!Array.isArray(sentences)) {
+        return false;
+      }
+      setGroupByName(name, sentences);
+      toast("imported", { icon: () => "😆" });
+    });
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast("copied", { icon: () => "🤪" });
   };
-
 
   return (
     <section className="p-4">
@@ -61,6 +72,7 @@ function Group() {
 
       <div className="mb-4">
         <Button name="Export" onClick={handleExport} />
+        <Button name="Import" onClick={handleImport} className="ml-1" />
         <Button name="Flashcard" className="ml-1" onClick={goToFlashcard} />
       </div>
       <ul>
