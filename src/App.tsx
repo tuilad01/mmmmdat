@@ -20,9 +20,9 @@ function App() {
           <li key={groupName} className="mb-2">
             <Link
               to={`/group/${groupName}`}
-              className="font-medium text-blue-600 dark:text-blue-500 hover:bg-slate-100 active:bg-slate-200 border-solid border-2 border-indigo-600 rounded-lg block p-4 md:w-[398px]"
+              className="font-medium text-blue-600 dark:text-blue-500 hover:text-blue-600 active:bg-slate-200 border-l-4 hover:border-indigo-500 p-2"
             >
-              {index + 1}. {groupName}
+              {groupName}
             </Link>
           </li>
         ))}

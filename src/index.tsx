@@ -15,6 +15,15 @@ import Group from "./components/Group";
 import "react-toastify/dist/ReactToastify.css";
 import Flashcard from "./components/Flashcard";
 
+function sortByState(
+  sentence: { state: number | undefined },
+  nextSentence: { state: number | undefined }
+) {
+  sentence.state = sentence.state || 0;
+  nextSentence.state = nextSentence.state || 0;
+  return sentence.state - nextSentence.state;
+}
+
 const router = createHashRouter([
   {
     path: "/",
@@ -33,9 +42,18 @@ const router = createHashRouter([
   {
     path: "flashcard/:name",
     loader: async ({ params }) => {
+      let sentences = getGroupByName(params.name || "");
+
+      // Get 40 items only
+      const MAX_ITEMS = 40;
+      if (sentences.length - MAX_ITEMS > 0) {
+        sentences.sort(sortByState);
+        sentences = sentences.splice(0, MAX_ITEMS);
+      }
+
       return {
         name: params.name,
-        sentences: getGroupByName(params.name || ""),
+        sentences: sentences,
       };
     },
     element: <Flashcard />,
