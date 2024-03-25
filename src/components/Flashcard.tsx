@@ -4,11 +4,7 @@ import CardList, { CardRef, Card } from "./Card";
 import Button from "./Button";
 import Anchor from "./Anchor";
 import { useEffect, useRef, useState } from "react";
-import {
-  saveState,
-  setGroupByName,
-  updateSentencesByGroupName,
-} from "../common";
+import { saveState } from "../common";
 
 interface Flashcard {
   sentence: string;

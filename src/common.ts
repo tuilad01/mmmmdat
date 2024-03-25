@@ -111,7 +111,6 @@ export function saveState(
     item.state = state;
     return item;
   });
-  //setGroupByName(name, newSentences);
   updateSentencesByGroupName(groupName, newSentences);
 
   return newSentences;
