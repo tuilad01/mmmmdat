@@ -4,7 +4,11 @@ import CardList, { CardRef, Card } from "./Card";
 import Button from "./Button";
 import Anchor from "./Anchor";
 import { useEffect, useRef, useState } from "react";
-import { setGroupByName } from "../common";
+import {
+  saveState,
+  setGroupByName,
+  updateSentencesByGroupName,
+} from "../common";
 
 interface Flashcard {
   sentence: string;
@@ -14,13 +18,11 @@ interface Flashcard {
   state: number;
   isHidden: boolean;
 }
-// 0 => 1, 1 => 2, 2 => 2
-const PASSED = [1, 2, 2];
 
 function Flashcard() {
-  const { search } = useLocation();
-  const parameters = new URLSearchParams(search);
-  //let selectedState = parameters.get("state");
+  // const { search } = useLocation();
+  // const parameters = new URLSearchParams(search);
+  // //let selectedState = parameters.get("state");
   const { name, sentences: data } = useLoaderData() as Group;
   const [state, setState] = useState<number>(0);
   const [flashcards, setFlashcards] = useState<any[]>([]);
@@ -32,41 +34,14 @@ function Flashcard() {
     ]);
   }, []);
 
-  // useEffect(() => {
-  //   if (selectedState) {
-  //     setState(parseInt(selectedState ?? 0));
-  //   }
-  // }, [selectedState]);
-
   const handleNextState = () => {
     const newState = (state + 1) % 3;
 
     setState(newState);
     let cards = cardRef?.current?.getCards() || [];
     // save data to local
-    const newData = saveState(cards, data);
-    setGroupByName(name, newData);
+    const newData = saveState(name, cards, data);
     setFlashcards(newData.filter((item) => item.state <= newState));
-  };
-
-  const saveState = (cards: Card[], sentences: Sentence[]) => {
-    if (cards.length === 0) {
-      return sentences;
-    }
-    const newSentences = sentences.map((item) => {
-      const card = cards.find((c) => c.sentence === item.sentence);
-      if (!card) {
-        return item;
-      }
-
-      let state = item.state || 0;
-      state = card.isHidden ? PASSED[state] : 0;
-      item.state = state;
-      return item;
-    });
-    setGroupByName(name, newSentences);
-
-    return newSentences;
   };
 
   return (
