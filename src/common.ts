@@ -1,5 +1,5 @@
 import { Card } from "./components/Card";
-import { Sentence } from "./components/Group";
+import { Group, Sentence } from "./components/Group";
 
 export const PUBLIC_JSON_PATH = "/json";
 export const ROOT_LOCAL_STORAGE_PATH = "/myapp/common-phrases";
@@ -65,6 +65,37 @@ export function setGroupByName(name: string, data: object[]) {
   );
 }
 
+export function updateSetence(
+  groupName: string,
+  sentence: string,
+  meaning: string
+) {
+  if (!groupName) {
+    return false;
+  }
+
+  const strGroup = localStorage.getItem(getGroupName(groupName));
+  if (!strGroup) {
+    return false;
+  }
+
+  const group = JSON.parse(strGroup) as { sentence: string; meaning: string }[];
+  const item = group.find((d) => d.sentence === sentence);
+  if (!item) {
+    return false;
+  }
+
+  // update
+  item.meaning = meaning;
+
+  localStorage.setItem(
+    ROOT_LOCAL_STORAGE_PATH + "/" + groupName,
+    JSON.stringify(group)
+  );
+
+  return true;
+}
+
 export function updateSentencesByGroupName(name: string, sentences: any[]) {
   if (!name || !sentences) return false;
 
@@ -100,7 +131,7 @@ export function saveState(
   if (cards.length === 0) {
     return sentences;
   }
-  const newSentences = sentences.map((item) => {
+  const newSentences = sentences.map<Sentence>((item) => {
     const card = cards.find((c) => c.sentence === item.sentence);
     if (!card) {
       return item;
