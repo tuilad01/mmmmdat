@@ -10,8 +10,8 @@ import {
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { getGroupByName } from "./common";
-import Group from "./components/Group";
+import GroupPage from "./components/Group";
+import { Group } from "./group/group";
 import "react-toastify/dist/ReactToastify.css";
 import Flashcard from "./components/Flashcard";
 
@@ -32,24 +32,41 @@ const router = createHashRouter([
   {
     path: "group/:name",
     loader: async ({ params }) => {
+      if (!params.name) {
+        return {
+          name: "unkown",
+          sentences: [],
+        };
+      }
+
+      const group = new Group({ name: params.name });
+
       return {
         name: params.name,
-        sentences: getGroupByName(params.name || ""),
+        sentences: group.getSentences({}),
       };
     },
-    element: <Group />,
+    element: <GroupPage />,
   },
   {
     path: "flashcard/:name",
     loader: async ({ params }) => {
-      let sentences = getGroupByName(params.name || "");
+      if (!params.name) {
+        return {
+          name: "unkown",
+          sentences: [],
+        };
+      }
+
+      const group = new Group({ name: params.name });
+      const sentences = group.getSentences({});
 
       // Get 40 items only
-      const MAX_ITEMS = 40;
-      if (sentences.length - MAX_ITEMS > 0) {
-        sentences.sort(sortByState);
-        sentences = sentences.splice(0, MAX_ITEMS);
-      }
+      // const MAX_ITEMS = 40;
+      // if (sentences.length - MAX_ITEMS > 0) {
+      //   sentences.sort(sortByState);
+      //   sentences = sentences.splice(0, MAX_ITEMS);
+      // }
 
       return {
         name: params.name,

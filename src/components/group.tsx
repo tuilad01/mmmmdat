@@ -1,28 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import { setGroupByName } from "../common";
 import Anchor from "./Anchor";
 import Button from "./Button";
+import { Group, Sentence } from "../group/group";
 
-export interface Sentence {
-  sentence: string;
-  meaning: string;
-  state: number;
-}
-export interface Group {
+export interface LoaderData {
   name: string;
   sentences: Sentence[];
 }
 
-function Group() {
-  const { name, sentences: data } = useLoaderData() as Group;
+function GroupPage() {
+  const { name, sentences: data } = useLoaderData() as LoaderData;
   const [sentences, setSentences] = useState<Sentence[]>(data);
-  const [isShow, setIsShow] = useState(false);
   const navigate = useNavigate();
 
   const handleSave = () => {
-    setGroupByName(name, sentences);
+    new Group({ name: name, sentences: sentences }).save();
   };
 
   const handleInputChange = (
@@ -53,7 +47,7 @@ function Group() {
       if (!Array.isArray(sentences)) {
         return false;
       }
-      setGroupByName(name, sentences);
+      new Group({ name: name, sentences: sentences }).save();
       toast("imported", { icon: () => "😆" });
     });
   };
@@ -131,4 +125,4 @@ function Group() {
   );
 }
 
-export default Group;
+export default GroupPage;

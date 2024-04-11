@@ -1,22 +1,18 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import {
-  GROUP_NAMES,
-  PUBLIC_JSON_PATH,
-  ROOT_LOCAL_STORAGE_PATH,
-  seedLocalStorage,
-} from "./common";
 import { Link, Outlet } from "react-router-dom";
+import { GroupManagement } from "./group/group-management";
 
 function App() {
+  const groupManagement = new GroupManagement();
   useEffect(() => {
-    seedLocalStorage(GROUP_NAMES, PUBLIC_JSON_PATH, ROOT_LOCAL_STORAGE_PATH);
+    groupManagement.seed();
   }, []);
 
   return (
     <div>
       <ul className="p-4">
-        {GROUP_NAMES.map((groupName, index) => (
+        {groupManagement.getGroupNames().map((groupName, index) => (
           <li key={groupName} className="mb-2">
             <Link
               to={`/group/${groupName}`}

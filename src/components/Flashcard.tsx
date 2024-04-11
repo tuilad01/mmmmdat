@@ -1,13 +1,13 @@
 import { useLoaderData, useLocation } from "react-router-dom";
-import { Group, Sentence } from "./Group";
 import CardList, { CardRef, Card } from "./Card";
 import Button from "./Button";
 import Anchor from "./Anchor";
 import { useEffect, useRef, useState } from "react";
-import { saveState, updateSetence } from "../common";
 import Modal from "./Modal";
 import TextBox from "./TextBox";
 import FormGroup from "./FormGroup";
+import { Group, Sentence } from "../group/group";
+import { shuffle } from "../common/common";
 
 interface Flashcard {
   sentence: string;
@@ -18,11 +18,16 @@ interface Flashcard {
   isHidden: boolean;
 }
 
+interface LoaderData {
+  name: string;
+  sentences: Sentence[];
+}
+
 function Flashcard() {
   // const { search } = useLocation();
   // const parameters = new URLSearchParams(search);
   // //let selectedState = parameters.get("state");
-  const { name, sentences: data } = useLoaderData() as Group;
+  const { name, sentences: data } = useLoaderData() as LoaderData;
   const [state, setState] = useState<number>(0);
   const [flashcards, setFlashcards] = useState<any[]>([]);
   const cardRef = useRef<CardRef | null>(null);
@@ -30,19 +35,35 @@ function Flashcard() {
   const [cardEdit, setCardEdit] = useState<Card | undefined>();
 
   useEffect(() => {
-    setFlashcards([
-      ...data.filter((s) => s.state === undefined || s.state === state),
-    ]);
+    const cards = data.filter(
+      (s) => s.state === undefined || s.state === state
+    );
+    setFlashcards(shuffle([...cards]));
   }, []);
 
   const handleNextState = () => {
     const newState = (state + 1) % 3;
-
     setState(newState);
+
+    // select remembered sentences
     let cards = cardRef?.current?.getCards() || [];
-    // save data to local
-    const newData = saveState(name, cards, data);
-    setFlashcards(newData.filter((item) => item.state <= newState));
+    const lose = cards
+      .filter((card) => card.isHidden === false)
+      .map((card) => card.sentence);
+    const remembered = flashcards.filter(
+      (fc) => lose.indexOf(fc.sentence) === -1
+    );
+
+    // calculate sentence states for next state
+    const group = new Group({ name: name }).loadSentences();
+    group.updateNextState(lose, remembered);
+    group.save();
+
+    const nextStateSentences = group
+      .getSentences({ isLocal: false })
+      .filter((sentence) => sentence.state <= newState);
+
+    setFlashcards(shuffle(nextStateSentences));
   };
 
   const handleEdit = (card: Card) => {
@@ -55,15 +76,21 @@ function Flashcard() {
       return false;
     }
 
-    if (updateSetence(name, cardEdit.sentence, cardEdit.meaning)) {
-      // const flashcard = flashcards.find(
-      //   (d) => d.sentence === cardEdit.sentence
-      // );
-      // if (flashcard) {
-      //   flashcard.meaning = cardEdit.meaning;
-      //   setFlashcards([...flashcards]);
-      // }
+    const flashcard = flashcards.find(
+      (fc) => fc.sentence === cardEdit.sentence
+    );
+    if (!flashcard) {
+      return false;
     }
+
+    const group = new Group({ name: name }).loadSentences();
+    group.update({
+      sentence: cardEdit.sentence,
+      meaning: cardEdit.meaning,
+      state: flashcard.state,
+    });
+    group.save();
+
     setIsShowModal(false);
     setCardEdit(undefined);
   };
@@ -91,7 +118,6 @@ function Flashcard() {
               textBoxProps={{
                 value: cardEdit?.meaning,
                 onChange: (value: string) => {
-                  console.log(value);
                   setCardEdit((prev) => prev && { ...prev, meaning: value });
                 },
               }}

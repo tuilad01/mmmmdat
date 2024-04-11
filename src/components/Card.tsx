@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { Sentence } from "../group/group";
 
 export interface CardRef {
   getCards: () => Card[];
@@ -12,6 +13,14 @@ export interface Card {
   isFront: boolean;
 }
 
+export function convertCardToSentence(card: Card): Sentence {
+  return {
+    sentence: card.sentence,
+    meaning: card.meaning,
+    state: 0,
+  };
+}
+
 function mappingCard(item: any, index: number) {
   const color = index % 2 ? "rgb(226 232 240)" : "rgb(203 213 225)";
   return {
@@ -22,21 +31,6 @@ function mappingCard(item: any, index: number) {
     isFront: false,
   };
 }
-
-const random = (list: Card[]) => {
-  let index = list.length;
-
-  while (index > 0) {
-    const newIndex = Math.floor(Math.random() * list.length);
-    index--;
-
-    const temp = list[index];
-    list[index] = list[newIndex];
-    list[newIndex] = temp;
-  }
-
-  return list;
-};
 
 export interface CardListProps {
   data: any[];
@@ -56,7 +50,7 @@ function CardList({ data, onEdit }: CardListProps, ref: React.Ref<CardRef>) {
   );
 
   useEffect(() => {
-    setCards(random(data.map(mappingCard)));
+    setCards(data.map(mappingCard) as Card[]);
   }, [data]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>, card: Card) => {
