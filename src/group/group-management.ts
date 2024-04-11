@@ -50,6 +50,13 @@ export class GroupManagement {
     return keys;
   }
 
+  removeAllGroups() {
+    const keys = this.getAllGroup();
+    for (const key of keys) {
+      localStorage.removeItem(key);
+    }
+  }
+
   seed() {
     for (const groupName of this.groupNames) {
       const groupPathLocalStorage = GroupManagement.prefixGroupId + groupName;
@@ -65,7 +72,7 @@ export class GroupManagement {
               const key = index
                 ? `${groupPathLocalStorage.replace(".json", `_${index}.json`)}`
                 : groupPathLocalStorage;
-              localStorage.setItem(key, JSON.stringify(arr));
+              localStorage.setItem(key, JSON.stringify(arr.splice(0, 40)));
             }
           });
       }

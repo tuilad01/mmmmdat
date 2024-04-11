@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import Anchor from "./Anchor";
-import Button from "./Button";
-import { Group, Sentence } from "../group/group";
+import Anchor from "./../components/Anchor";
+import Button from "./../components/Button";
+import { Group, Sentence } from "./group";
 
 export interface LoaderData {
   name: string;

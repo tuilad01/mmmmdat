@@ -10,10 +10,11 @@ import {
 
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import GroupPage from "./components/Group";
+import GroupPage from "./group/GroupPage";
 import { Group } from "./group/group";
 import "react-toastify/dist/ReactToastify.css";
 import Flashcard from "./components/Flashcard";
+import SettingPage from "./settings/Settings";
 
 function sortByState(
   sentence: { state: number | undefined },
@@ -29,6 +30,11 @@ const router = createHashRouter([
     path: "/",
     element: <App />,
   },
+  {
+    path: "/settings",
+    element: <SettingPage />,
+  },
+
   {
     path: "group/:name",
     loader: async ({ params }) => {
