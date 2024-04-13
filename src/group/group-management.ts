@@ -25,14 +25,14 @@ export class GroupManagement {
   constructor() {}
 
   getGroupNames() {
-    const groupNames = this.getAllGroup().map((key) =>
+    const groupNames = this.getAllGroupKeys().map((key) =>
       key.replace(GroupManagement.prefixGroupId, "")
     );
     groupNames.sort();
     return groupNames;
   }
 
-  getAllGroup(): string[] {
+  getAllGroupKeys(): string[] {
     const keys = [];
     for (let index = 0; index < localStorage.length; index++) {
       const key = localStorage.key(index);
@@ -51,9 +51,35 @@ export class GroupManagement {
   }
 
   removeAllGroups() {
-    const keys = this.getAllGroup();
+    const keys = this.getAllGroupKeys();
     for (const key of keys) {
       localStorage.removeItem(key);
+    }
+  }
+
+  getAllGroups() {
+    const keys = this.getAllGroupKeys();
+    const groups = [];
+    for (const key of keys) {
+      const strGroup = localStorage.getItem(key);
+      if (strGroup) {
+        const group = JSON.parse(strGroup);
+        groups.push({
+          name: key.replace(GroupManagement.prefixGroupId, ""),
+          data: group,
+        });
+      }
+    }
+
+    return groups;
+  }
+
+  setAllGroups(groups: { name: string; data: any[] }[]) {
+    for (const group of groups) {
+      localStorage.setItem(
+        GroupManagement.prefixGroupId + group.name,
+        JSON.stringify(group.data)
+      );
     }
   }
 
